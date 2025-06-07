@@ -9,7 +9,7 @@ class DeviceCategory extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['name', 'description'];
+    protected $fillable = ['name'];
 
     public function repairs()
     {
@@ -18,6 +18,6 @@ class DeviceCategory extends Model
 
     public function descriptions()
     {
-        return $this->hasMany(CategoryDescription::class);
+        return $this->hasMany(DeviceDescription::class, 'category_id');
     }
 }

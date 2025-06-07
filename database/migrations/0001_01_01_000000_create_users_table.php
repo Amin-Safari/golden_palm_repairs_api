@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->string('phone')->unique();
+            $table->string('role')->default('user')->comment('user, admin, repairman');
             $table->string('national_code')->nullable();
             $table->rememberToken();
             $table->timestamps();

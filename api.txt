@@ -1,0 +1,103 @@
+# مستندات API
+
+## احراز هویت (Authentication)
+
+### خروج از سیستم
+- متد: POST
+- آدرس: api/auth/logout
+- کنترلر: AuthController@logout
+- ورودی: توکن احراز هویت در هدر
+- خروجی: پیام موفقیت‌آمیز
+
+### ارسال کد تایید
+- متد: POST
+- آدرس: api/auth/send-code
+- کنترلر: AuthController@sendVerificationCode
+- ورودی: شماره موبایل
+- خروجی: پیام ارسال موفق کد
+
+### تایید کد
+- متد: POST
+- آدرس: api/auth/verify
+- کنترلر: AuthController@verifyCode
+- ورودی: شماره موبایل و کد تایید
+- خروجی: توکن دسترسی>>>برای دولوپ
+
+## تعمیرات (Repairs)
+
+### لیست تعمیرات
+- متد: GET
+- آدرس: api/repairs
+- کنترلر: RepairController@index
+- ورودی: پارامترهای فیلتر (اختیاری)
+- خروجی: لیست تعمیرات
+
+### ایجاد تعمیر جدید
+- متد: POST
+- آدرس: api/repairs
+- کنترلر: RepairController@store
+- ورودی: اطلاعات تعمیر (شرح مشکل، آدرس و...)
+- خروجی: اطلاعات تعمیر ایجاد شده
+
+### مشاهده جزئیات تعمیر
+- متد: GET
+- آدرس: api/repairs/{repair}
+- کنترلر: RepairController@show
+- ورودی: شناسه تعمیر
+- خروجی: جزئیات کامل تعمیر
+
+### بروزرسانی تعمیر
+- متد: PUT/PATCH
+- آدرس: api/repairs/{repair}
+- کنترلر: RepairController@update
+- ورودی: شناسه تعمیر و اطلاعات جدید
+- خروجی: اطلاعات بروزرسانی شده
+
+### حذف تعمیر
+- متد: DELETE
+- آدرس: api/repairs/{repair}
+- کنترلر: RepairController@destroy
+- ورودی: شناسه تعمیر
+- خروجی: پیام موفقیت‌آمیز
+
+### اختصاص تکنسین
+- متد: POST
+- آدرس: api/repairs/{repair}/assign
+- کنترلر: RepairController@assignTechnician
+- ورودی: شناسه تعمیر و شناسه تکنسین
+- خروجی: اطلاعات بروزرسانی شده
+
+### تعیین قیمت
+- متد: POST
+- آدرس: api/repairs/{repair}/set-price
+- کنترلر: RepairController@setPrice
+- ورودی: شناسه تعمیر و مبلغ
+- خروجی: اطلاعات بروزرسانی شده
+
+### بروزرسانی وضعیت
+- متد: POST
+- آدرس: api/repairs/{repair}/update-status
+- کنترلر: RepairController@updateStatus
+- ورودی: شناسه تعمیر و وضعیت جدید
+- خروجی: اطلاعات بروزرسانی شده
+
+## آمار (Statistics)
+
+### آمار ماهانه
+- متد: GET
+- آدرس: api/statistics/monthly
+- کنترلر: DescriptionStatisticsController@monthlyStatistics
+- ورودی: سال و ماه (اختیاری)
+- خروجی: آمار ماهانه تعمیرات
+
+### آمار سالانه
+- متد: GET
+- آدرس: api/statistics/yearly
+- کنترلر: DescriptionStatisticsController@yearlyStatistics
+- ورودی: سال (اختیاری)
+- خروجی: آمار سالانه تعمیرات
+
+## مستندات Swagger
+- آدرس: api/documentation
+- کنترلر: L5Swagger\Http\SwaggerController@api
+- توضیحات: مستندات API با Swagger 
