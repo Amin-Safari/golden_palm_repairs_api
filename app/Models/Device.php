@@ -2,25 +2,42 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+
+use Illuminate\Notifications\Notifiable;
+
 
 class Device extends Model
 {
-    use HasFactory;
-
+    use Notifiable;
     protected $fillable = [
-        'user_id',
-        'description_id'
+        'customer_id',
+        'technician_id',
+        'device_category_id',
+        'device_name',
+        'device_problem',
+        'appearance_details',
+        'repair_details',
+        'prepaid',
+        'repair_price',
+        'price',
+        'status',
+        'repair_status',
+        'verification_code',
+        'received_at',
+        'delivered_at',
+        'delivered_real_at'
     ];
-
-    public function user()
+    public function customer()
     {
         return $this->belongsTo(User::class);
     }
-
-    public function description()
+    public function technician()
     {
-        return $this->belongsTo(DeviceDescription::class, 'description_id');
+        return $this->belongsTo(User::class);
     }
-} 
+    public function device_category()
+    {
+        return $this->belongsTo(DeviceCategory::class);
+    }
+}

@@ -14,15 +14,15 @@ return new class extends Migration
         Schema::create('users', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->string('phone')->unique();
-            $table->string('role')->default('user')->comment('user, admin, repairman');
-            $table->string('national_code')->nullable();
+            $table->string('mobile')->unique();
+            $table->integer('role')->default(3);
+            $table->timestamp('mobile_verified_at')->nullable();
             $table->rememberToken();
             $table->timestamps();
         });
 
         Schema::create('password_reset_tokens', function (Blueprint $table) {
-            $table->string('phone')->primary();
+            $table->string('email')->primary();
             $table->string('token');
             $table->timestamp('created_at')->nullable();
         });

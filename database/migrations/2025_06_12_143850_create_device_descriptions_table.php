@@ -6,18 +6,24 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    public function up()
+    /**
+     * Run the migrations.
+     */
+    public function up(): void
     {
         Schema::create('device_descriptions', function (Blueprint $table) {
             $table->id();
-            $table->text('description');
-            $table->decimal('price', 10, 2);
+            $table->string('description');
+            $table->string('price');
             $table->foreignId('category_id')->constrained('device_categories')->onDelete('cascade');
             $table->timestamps();
         });
     }
 
-    public function down()
+    /**
+     * Reverse the migrations.
+     */
+    public function down(): void
     {
         Schema::dropIfExists('device_descriptions');
     }
