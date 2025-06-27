@@ -24,8 +24,8 @@ Route::prefix('user')->group(function (){
     Route::post('check',[UserController::class,'check']);
     Route::post('Auth',[UserController::class,'Auth']);
     Route::post('login',[UserController::class,'login']);
-    Route::post('create_user',[UserController::class,'create_user']);
-    Route::post('search_user',[UserController::class,'search_user']);
+    Route::post('create_user',[UserController::class,'createUser']);
+    Route::post('search_user',[UserController::class,'searchUser']);
     Route::post('logout',[UserController::class,'logout']);
 });
 Route::prefix('delivery')->group(function (){

@@ -3,13 +3,14 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Notifications\Notifiable;
-
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Device extends Model
 {
-    use Notifiable;
+    use HasFactory, Notifiable;
+
     protected $fillable = [
         'customer_id',
         'technician_id',
@@ -28,16 +29,18 @@ class Device extends Model
         'delivered_at',
         'delivered_real_at'
     ];
-    public function customer()
+    public function customer(): BelongsTo
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(User::class, 'customer_id');
     }
-    public function technician()
+
+    public function technician(): BelongsTo
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(User::class, 'technician_id');
     }
-    public function device_category()
+
+    public function category(): BelongsTo
     {
-        return $this->belongsTo(DeviceCategory::class);
+        return $this->belongsTo(DeviceCategory::class, 'device_category_id');
     }
 }

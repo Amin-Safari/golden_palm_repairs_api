@@ -12,34 +12,58 @@ class DeliverController extends Controller
 {
     public function v_code(Request $request)
     {
-        $v = Validator::make($request->all(),[
-            'v_code'=>'required|exists:devices,verification_code'
+        $validator = Validator::make($request->all(), [
+            'v_code' => 'required|exists:devices,verification_code'
         ]);
-        if ($v->fails()){
-            return response()->json($v->errors());
-        }
-        $d = Device::Where('verification_code',$v->c_code)->get();
-        $code = rand(100000, 999999);
-//        cach kardan yadet nare sms
-        Cache::put($v, $code, 5);
 
-        return response()->json($d,$code);
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()], 422);
+        }
+
+        $device = Device::where('verification_code', $request->v_code)->first();
+
+        if (!$device) {
+            return response()->json(['error' => 'Device not found'], 404);
+        }
+
+        $code = rand(100000, 999999);
+        // ذخیره کد در کش با کلید مناسب (مثلاً شماره موبایل یا ایمیل)
+        Cache::put($device->mobile, $code, 300); // 5 دقیقه
+
+        return response()->json([
+            'message' => 'Verification code sent',
+            'device' => $device,
+            // در محیط تولید کد را برنگردانید
+            'code' => env('APP_ENV') === 'local' ? $code : null
+        ]);
     }
+
     public function check_code(Request $request)
     {
-        $v = Validator::make($request->all(),[
-            'code'=>'required',
-            'v_code'=>'required'
+        $validator = Validator::make($request->all(), [
+            'code' => 'required',
+            'v_code' => 'required|exists:devices,verification_code'
         ]);
-        if ($v->fails()){
-            return response()->json($v->errors());
+
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()], 422);
         }
-        $code_get = $request->code;
-        $mobile = $request->v_code;
-        $code = Cache::get($mobile);
-        if ($code != $code_get) {
-            return response()->json('verify code is not value');
+
+        $device = Device::where('verification_code', $request->v_code)->first();
+
+        if (!$device) {
+            return response()->json(['error' => 'Device not found'], 404);
         }
-        return response()->json('success');
+
+        $code = Cache::get($device->mobile);
+
+        if ($code != $request->code) {
+            return response()->json(['error' => 'Invalid verification code'], 401);
+        }
+
+        // پاک کردن کد از کش پس از استفاده موفق
+        Cache::forget($device->mobile);
+
+        return response()->json(['message' => 'Verification successful']);
     }
 }

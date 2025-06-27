@@ -12,74 +12,134 @@ class UserController extends Controller
 {
     public function check(Request $request)
     {
-        $mobile = $request->get('mobile');
-        $id_mobile = User::where('mobile', $mobile)->first();
-        if ($id_mobile) {
-            $name_user = User::find($id_mobile)->get('name');
-            return response()->json($name_user);
+        $validator = Validator::make($request->all(), [
+            'mobile' => 'required|size:11'
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()], 422);
         }
-        return response()->json('mobile not found', 404);
+
+        $user = User::where('mobile', $request->mobile)->first();
+
+        if (!$user) {
+            return response()->json(['message' => 'User not found'], 404);
+        }
+
+        return response()->json([
+            'name' => $user->name,
+            'mobile' => $user->mobile
+        ]);
     }
 
-    public function Auth(Request $request)
+    public function auth(Request $request)
     {
-        $v = Validator::make($request->all(), [
-            'mobile' => 'required|max:11'
+        $validator = Validator::make($request->all(), [
+            'mobile' => 'required|string|size:11'
         ]);
-        if ($v->fails()) {
-            return response()->json($v->errors(), 422);
+
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()], 422);
         }
-        $check = User::where('mobile', $v)->first();
-        if (!$check) {
-            return response()->json('mobile not found', 404);
+
+        $user = User::where('mobile', $request->mobile)->first();
+
+        if (!$user) {
+            return response()->json(['message' => 'User not found'], 404);
         }
+
         $code = rand(100000, 999999);
-//        cach kardan yadet nare sms
-        Cache::put($v, $code, 5);
-        return response()->json($v, $code);
+        $expiresAt = now()->addMinutes(5);
+
+        Cache::put('auth_code_' . $request->mobile, $code, $expiresAt);
+
+        // در اینجا باید کد را از طریق SMS ارسال کنید
+        // sendSms($request->mobile, "Your verification code: $code");
+
+        return response()->json([
+            'message' => 'Verification code sent',
+            'expires_at' => $expiresAt->toDateTimeString()
+        ]);
     }
 
     public function login(Request $request)
     {
-        $code_get = $request->code;
-        $mobile = $request->mobile;
-        $code = Cache::get($mobile);
-        if ($code == $code_get) {
-            $token = $mobile->user()->createToken($request->token_name);
+        $validator = Validator::make($request->all(), [
+            'mobile' => 'required|string|size:11',
+            'code' => 'required|numeric'
+        ]);
 
-            return response()->json($token->plainTextToken);
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()], 422);
         }
-        return response()->json('code not value');
+
+        $cachedCode = Cache::get('auth_code_' . $request->mobile);
+
+        if ($cachedCode != $request->code) {
+            return response()->json(['message' => 'Invalid verification code'], 401);
+        }
+
+        $user = User::where('mobile', $request->mobile)->firstOrFail();
+
+        // پاک کردن کد استفاده شده از کش
+        Cache::forget('auth_code_' . $request->mobile);
+
+        // ایجاد توکن دسترسی
+        $token = $user->createToken('auth_token')->plainTextToken;
+
+        return response()->json([
+            'access_token' => $token,
+            'token_type' => 'Bearer',
+            'user' => $user
+        ]);
     }
 
     public function logout(Request $request)
     {
         $request->user()->currentAccessToken()->delete();
-        return response()->json('log out successfully');
+
+        return response()->json(['message' => 'Successfully logged out']);
     }
 
-    public function create_user(Request $request)
+    public function createUser(Request $request)
     {
-        $v = Validator::make($request->all(), [
-            'name' => 'required|max:200',
-            'mobile' => 'required|unique:users,mobile',
-            'role' => 'required'
+        $validator = Validator::make($request->all(), [
+            'name' => 'required|string|max:200',
+            'mobile' => 'required|string|size:11|unique:users,mobile',
+            'role' => 'required|string|in:admin,user,technician' // مثال برای نقش‌های مجاز
         ]);
-        if ($v->fails()) {
-            return response()->json($v->errors());
+
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()], 422);
         }
-        $user = User::create($v);
-        return response()->json($user);
+
+        $user = User::create([
+            'name' => $request->name,
+            'mobile' => $request->mobile,
+            'role' => $request->role
+        ]);
+
+        return response()->json([
+            'message' => 'User created successfully',
+            'user' => $user
+        ], 201);
     }
 
-    public function search_user(Request $request)
+    public function searchUser(Request $request)
     {
-        $query = $request->input('user');
-        $results = User::where('name', 'like', "%{$query}%")
-            ->orWhere('mobile', 'like', "%{$query}%")
-            ->orWhere('name', 'like', "%{$query}%")
-            ->orWhere('role','like', "{$query}")
+        $validator = Validator::make($request->all(), [
+            'query' => 'required'
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()], 422);
+        }
+
+        $users = User::where('name', 'like', "%{$request->query}%")
+            ->orWhere('mobile', 'like', "%{$request->query}%")
+            ->orWhere('role', $request->query)
             ->get();
-        return response()->json($results);
+
+        return response()->json($users);
     }
 }
