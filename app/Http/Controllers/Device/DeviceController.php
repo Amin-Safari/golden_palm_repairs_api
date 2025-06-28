@@ -141,7 +141,9 @@ class DeviceController extends Controller
         $Cid= $device->customer_id;
         $user=User::where('id',$Cid)->value('name');
         $mobile=User::where('id',$Cid)->value('mobile');
-        $text= " سلام ".$user ." عزیز ". "\n". " دستگاه ". $device->device_name." با کد رهگیری: "."\"".$device->verification_code."\""." حذف شد. ". "\n"."تعمیرات نخل طلایی";
+        $text= " سلام ".$user ." عزیز ". "\n". " دستگاه ". $device->device_name." با کد رهگیری: "."\"".$device->verification_code."\""." حذف شد
+
+        . ". "\n"."تعمیرات نخل طلایی";
         $smsService->sendSms($mobile, $text);
 
         $device->delete();
