@@ -9,6 +9,7 @@ use App\Http\Controllers\User\UserController;
 use App\Http\Controllers\Device\DeliverController;
 use App\Http\Controllers\RequestController;
 use App\Http\Controllers\User\UserDeviceController;
+use App\Http\Controllers\Sms\SmsController;
 
 Route::prefix('device')->group(function (){
     Route::apiResource('category',DeviceCategotyController::class)
@@ -49,3 +50,8 @@ Route::get('user-device',[UserDeviceController::class,'customerDevice'])
     ->middleware('auth:sanctum');
 Route::get('technician-device',[UserDeviceController::class,'technicianDevice'])
     ->middleware('check.role:1,2');
+
+Route::apiResource('sms',SmsController::class)
+    ->middleware('check.role:1');
+Route::post('send-sms',[SmsController::class,'sendSms'])
+    ->middleware('check.role:1');

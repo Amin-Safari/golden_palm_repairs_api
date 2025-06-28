@@ -70,7 +70,7 @@ class RequestController extends Controller
             return response()->json($validator->errors(), 422);
         }
 
-        $Request->update($request->only(['name']));
+        $Request->update($request->all());
 
         return response()->json([
             'message' => 'Request updated successfully',
