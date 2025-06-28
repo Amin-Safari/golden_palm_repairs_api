@@ -8,6 +8,7 @@ use App\Http\Controllers\Device\DeviceController;
 use App\Http\Controllers\User\UserController;
 use App\Http\Controllers\Device\DeliverController;
 use App\Http\Controllers\RequestController;
+use App\Http\Controllers\User\UserDeviceController;
 
 Route::prefix('device')->group(function (){
     Route::apiResource('category',DeviceCategotyController::class)
@@ -41,5 +42,10 @@ Route::prefix('delivery')->group(function (){
     Route::post('check_code',[DeliverController::class,'check_code'])
         ->middleware('check.role:1');
 });
+
 Route::apiResource('technician-request',RequestController::class)
+    ->middleware('check.role:1,2');
+Route::get('user-device',[UserDeviceController::class,'customerDevice'])
+    ->middleware('auth:sanctum');
+Route::get('technician-device',[UserDeviceController::class,'technicianDevice'])
     ->middleware('check.role:1,2');
