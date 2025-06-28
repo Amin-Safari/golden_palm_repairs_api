@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Device;
 use App\Http\Controllers\Controller;
 use App\Models\Device;
 use App\Models\User;
+use App\Services\smsService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
@@ -32,7 +33,7 @@ class DeviceController extends Controller
         return response()->json($devices);
     }
 
-    public function store(Request $request)
+    public function store(Request $request,smsService $smsService)
     {
         $userValidator = Validator::make($request->all(), [
             'mobile' => 'required|size:11',
@@ -71,15 +72,10 @@ class DeviceController extends Controller
             $device->update([
                 'verification_code' => $this->generateUniqueDeviceCode($device->id, $customer->id)
             ]);
-
             // ارسال پیامک
             try {
-                $sms = Melipayamak::sms();
-                $response = $sms->send(
-                    $request->mobile,
-                    '50002710028103',
-                    "کد پیگیری دستگاه شما: {$device->verification_code}"
-                );
+                $text= " سلام ".$request->name ." عزیز ". "\n". " دستگاه ". $request->device_name." با کد رهگیری: "."\"".$device->verification_code."\""." با موفقیت ثبت شد". "\n"."تعمیرات نخل طلایی";
+                $response = $smsService->sendSms($request->mobile,$text);
 
                 return response()->json([
                     'message' => 'Device created and SMS sent successfully',
@@ -112,16 +108,21 @@ class DeviceController extends Controller
         return response()->json($device);
     }
 
-    public function update(Request $request, string $id)
+    public function update(Request $request, string $id,smsService $smsService)
     {
         $device= Device::find($id);
         if (!$device) {
             return response()->json(['error' => 'Device not found'], 404);
         }
-
+        $Cid= $device->customer_id;
+        $user=User::where('id',$Cid)->value('name');
+        $mobile=User::where('id',$Cid)->value('mobile');
         $device->update($request->all());
 
-
+        if ($device->status=='fixed'){
+            $text= " سلام ".$user ." عزیز ". "\n". " دستگاه ". $device->device_name." با کد رهگیری: "."\"".$device->verification_code."\""." آماده تحویل است. ". "\n"."تعمیرات نخل طلایی";
+            $smsService->sendSms($mobile, $text);
+        }
         return response()->json([
             'message' => 'Device category updated successfully',
             'data' => $device
@@ -129,13 +130,19 @@ class DeviceController extends Controller
     }
 
 
-    public function destroy(string $id)
+    public function destroy(string $id,smsService $smsService)
     {
         $device = Device::find($id);
 
         if (!$device) {
             return response()->json(['message' => 'Device not found'], 404);
         }
+
+        $Cid= $device->customer_id;
+        $user=User::where('id',$Cid)->value('name');
+        $mobile=User::where('id',$Cid)->value('mobile');
+        $text= " سلام ".$user ." عزیز ". "\n". " دستگاه ". $device->device_name." با کد رهگیری: "."\"".$device->verification_code."\""." حذف شد. ". "\n"."تعمیرات نخل طلایی";
+        $smsService->sendSms($mobile, $text);
 
         $device->delete();
 

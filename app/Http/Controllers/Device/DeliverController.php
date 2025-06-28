@@ -4,13 +4,14 @@ namespace App\Http\Controllers\Device;
 
 use App\Http\Controllers\Controller;
 use App\Models\Device;
+use App\Services\SmsService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Validator;
 
 class DeliverController extends Controller
 {
-    public function v_code(Request $request)
+    public function v_code(Request $request,SmsService $smsService)
     {
         $validator = Validator::make($request->all(), [
             'v_code' => 'required|exists:devices,verification_code'
@@ -27,14 +28,14 @@ class DeliverController extends Controller
         }
 
         $code = rand(100000, 999999);
-        // ذخیره کد در کش با کلید مناسب (مثلاً شماره موبایل یا ایمیل)
+        $text = ' سلام '. $name.' عزیز '."\n"."کد احراز هویت  شما:"."\"".$code."\""."\n"."تعمیرات نخل طلایی";
+        $mas=$smsService->sendSms($request->mobile,$text);
+
         Cache::put($device->mobile, $code, 300); // 5 دقیقه
 
         return response()->json([
-            'message' => 'Verification code sent',
+            'message' => $mas,
             'device' => $device,
-            // در محیط تولید کد را برنگردانید
-            'code' => env('APP_ENV') === 'local' ? $code : null
         ]);
     }
 

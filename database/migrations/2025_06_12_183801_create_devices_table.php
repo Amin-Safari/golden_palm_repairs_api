@@ -22,7 +22,7 @@ return new class extends Migration
             $table->decimal('prepaid', 15, 2)->nullable();
             $table->decimal('price', 15, 2)->nullable();
             $table->decimal('repair_price', 15, 2)->nullable();
-            $table->string('status')->default('received')->comment('received,in_progress,delivered,canceled');
+            $table->string('status')->default('received')->comment('received,in_progress,fixed,delivered,canceled');
             $table->string('repair_status')->default('unpaid')->comment('unpaid,pay');
             $table->string('verification_code')->nullable();
             $table->dateTime('received_at')->nullable();

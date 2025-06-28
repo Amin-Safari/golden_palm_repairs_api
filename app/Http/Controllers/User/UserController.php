@@ -4,6 +4,7 @@ namespace App\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use App\Services\smsService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Validator;
@@ -32,7 +33,7 @@ class UserController extends Controller
         ]);
     }
 
-    public function auth(Request $request)
+    public function auth(Request $request,smsService $smsService)
     {
         $validator = Validator::make($request->all(), [
             'mobile' => 'required|string|size:11'
@@ -43,6 +44,7 @@ class UserController extends Controller
         }
 
         $user = User::where('mobile', $request->mobile)->first();
+        $name = User::where('mobile', $request->mobile)->value('name');
 
         if (!$user) {
             return response()->json(['message' => 'User not found'], 404);
@@ -53,11 +55,10 @@ class UserController extends Controller
 
         Cache::put('auth_code_' . $request->mobile, $code, $expiresAt);
 
-        // در اینجا باید کد را از طریق SMS ارسال کنید
-        // sendSms($request->mobile, "Your verification code: $code");
-
+        $text = ' سلام '. $name.' عزیز '."\n"."کد ورود شما:"."\"".$code."\""."\n"."تعمیرات نخل طلایی";
+        $mas=$smsService->sendSms($request->mobile,$text);
         return response()->json([
-            'message' => 'Verification code sent',
+            'message' => $mas,
             'expires_at' => $expiresAt->toDateTimeString()
         ]);
     }
@@ -101,7 +102,7 @@ class UserController extends Controller
         return response()->json(['message' => 'Successfully logged out']);
     }
 
-    public function createUser(Request $request)
+    public function createUser(Request $request,smsService $smsService)
     {
         $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:200',
@@ -112,6 +113,8 @@ class UserController extends Controller
         if ($validator->fails()) {
             return response()->json(['errors' => $validator->errors()], 422);
         }
+        $text = ' سلام '. $request->name.' عزیز '."\n"."شما با موفقیت در سامانه ثبت شدید"."\n"."تعمیرات نخل طلایی";
+        $mas=$smsService->sendSms($request->mobile,$text);
 
         $user = User::create([
             'name' => $request->name,
@@ -120,7 +123,7 @@ class UserController extends Controller
         ]);
 
         return response()->json([
-            'message' => 'User created successfully',
+            'message' => 'mas',
             'user' => $user
         ], 201);
     }
