@@ -10,6 +10,7 @@ use App\Http\Controllers\Device\DeliverController;
 use App\Http\Controllers\RequestController;
 use App\Http\Controllers\User\UserDeviceController;
 use App\Http\Controllers\Sms\SmsController;
+use App\Http\Controllers\StatusController;
 
 Route::prefix('device')->group(function (){
     Route::apiResource('category',DeviceCategotyController::class)
@@ -54,4 +55,8 @@ Route::get('technician-device',[UserDeviceController::class,'technicianDevice'])
 Route::apiResource('sms',SmsController::class)
     ->middleware('check.role:1');
 Route::post('send-sms',[SmsController::class,'sendSms'])
+    ->middleware('check.role:1');
+
+Route::get('status',[StatusController::class,'index']);
+Route::put('status',[StatusController::class,'update'])
     ->middleware('check.role:1');

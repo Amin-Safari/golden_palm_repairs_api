@@ -1,0 +1,2 @@
+create user whit role 1
+create one status whit id 1
