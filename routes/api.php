@@ -2,7 +2,7 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Device\DeviceCategotyController;
+use App\Http\Controllers\Device\DeviceCategoryController;
 use App\Http\Controllers\Device\DeviceDescriptionController;
 use App\Http\Controllers\Device\DeviceController;
 use App\Http\Controllers\User\UserController;
@@ -13,7 +13,7 @@ use App\Http\Controllers\Sms\SmsController;
 use App\Http\Controllers\StatusController;
 
 Route::prefix('device')->group(function (){
-    Route::apiResource('category',DeviceCategotyController::class)
+    Route::apiResource('category',DeviceCategoryController::class)
         ->middleware('check.role:1,2');
     Route::apiResource('description',DeviceDescriptionController::class)
         ->middleware('check.role:1,2');

@@ -7,7 +7,7 @@ use App\Models\DeviceCategory;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
-class DeviceCategotyController extends Controller
+class DeviceCategoryController extends Controller
 {
     /**
      * Display a listing of the resource.
