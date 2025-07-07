@@ -1,0 +1,56 @@
+  GET|HEAD        api/blog/author ..................................................................... author.index › Blog\AuthorController@index
+  نمایش همه اطلاعات همه نویسنده ها
+  دسترسی به رول یک و چهار
+  POST            api/blog/author ..................................................................... author.store › Blog\AuthorController@store
+              'name' => 'required|max:225',
+              'skill' => 'required|max:225',
+              'slogan' => 'required|max:225',
+              'about' => 'required',
+              'author_photo' => 'required|image|max:1024'
+              با این مشخصات ایجاد یک نویسنده
+              دسترسی به رول یک و چهار
+  GET|HEAD        api/blog/author/{author} .............................................................. author.show › Blog\AuthorController@show
+  برگرداندن یک نویسنده با دریافت آی دی
+  دسترسی به رول بک و چهار
+  PUT|PATCH       api/blog/author/{author} .......................................................... author.update › Blog\AuthorController@update
+              'name' => 'required|max:225',
+              'skill' => 'required|max:225',
+              'slogan' => 'required|max:225',
+              'about' => 'required',
+              'author_photo' => 'required|image|max:1024'
+              با دریافت آی دی با این مشخصات آپدیت اطلاعات
+              دسترسی به رول یک و چهار
+  DELETE          api/blog/author/{author} ........................................................ author.destroy › Blog\AuthorController@destroy
+  حذف یک نویسنده با دریافت آی دی
+  دسترسی به رول یک و چهار
+  GET|HEAD        api/blog/category ........................................................... category.index › Blog\BlogCategoryController@index
+  نمایش دسته بندی وبلاگ ها
+  دسترسی به رول یک و چهار
+  POST            api/blog/category ........................................................... category.store › Blog\BlogCategoryController@store
+  با این مشخصات ایجاد دسته بندی وبلاگ
+                'name' => 'required|max:225',
+                'which_web'=> 'required'
+                دسترسی به رول یک و چهار
+  GET|HEAD        api/blog/category/{category} .................................................. category.show › Blog\BlogCategoryController@show
+  نمایش یک دسته بندی وبلاگ با دریافت آی دی
+  دسترسی به رول یک و چهار
+  PUT|PATCH       api/blog/category/{category} .............................................. category.update › Blog\BlogCategoryController@update
+  آپدیت اطلاعات دسته بندی وبلاگ با دریافت آی دی با این مشخصات
+              'name' => 'required|max:225',
+              'which_web'=> 'required'
+              دسترسی به رول یک و چهار
+  DELETE          api/blog/category/{category} ............................................ category.destroy › Blog\BlogCategoryController@destroy
+  حذف یک دسته بندی وبلاگ با دریافت آی دی
+  دسترسی به رول یک و چهار
+  GET|HEAD        api/blog/index-author .............................................................................. Blog\AuthorController@index
+  نمایش همه نویسنده ها با تمام اطلاعات
+  دسترسی آزاد
+  GET|HEAD        api/blog/index-category ...................................................................... Blog\BlogCategoryController@index
+  نمایش همه دسته بندی های وبلاگ
+  دسترسی آزاد
+  GET|HEAD        api/blog/show-category/{category} ............................................................. Blog\BlogCategoryController@show
+  نمایش یک دسته بندی وبلاگ بادریافت آی دی
+  دسترسی آزاد
+    GET|HEAD        api/blog/show-author/{author} ....................................................................... Blog\AuthorController@show
+  نمایش یک نویسنده با دریافت آی دی
+  دسترسی آزاد

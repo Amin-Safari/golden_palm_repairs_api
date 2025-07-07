@@ -1,6 +1,5 @@
 <?php
 
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Device\DeviceCategotyController;
 use App\Http\Controllers\Device\DeviceDescriptionController;
@@ -11,6 +10,8 @@ use App\Http\Controllers\RequestController;
 use App\Http\Controllers\User\UserDeviceController;
 use App\Http\Controllers\Sms\SmsController;
 use App\Http\Controllers\StatusController;
+use App\Http\Controllers\Blog\BlogCategoryController;
+use App\Http\Controllers\Blog\AuthorController;
 
 Route::prefix('device')->group(function (){
     Route::apiResource('category',DeviceCategotyController::class)
@@ -25,8 +26,8 @@ Route::prefix('device')->group(function (){
         ->middleware('check.role:1,2');
     Route::post('search_date',[DeviceController::class,'search_date'])
         ->middleware('check.role:1,2');
-
 });
+
 Route::prefix('user')->group(function (){
     Route::post('check',[UserController::class,'check'])->middleware('check.role:1');
     Route::post('auth',[UserController::class,'Auth']);
@@ -60,3 +61,15 @@ Route::post('send-sms',[SmsController::class,'sendSms'])
 Route::get('status',[StatusController::class,'index']);
 Route::put('status',[StatusController::class,'update'])
     ->middleware('check.role:1');
+
+Route::prefix('blog')->group(function (){
+    Route::get('index-category',[BlogCategoryController::class,'index']);
+    Route::get('show-category/{category}',[BlogCategoryController::class,'show']);
+    Route::apiResource('category',BlogCategoryController::class)
+        ->middleware('check.role:1,4');
+
+    Route::apiResource('author',AuthorController::class)
+    ->middleware('check.role:1,4');
+    Route::get('index-author',[AuthorController::class,'index']);
+    Route::get('show-author/{author}',[AuthorController::class,'show']);
+});
