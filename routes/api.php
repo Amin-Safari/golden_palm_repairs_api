@@ -12,6 +12,7 @@ use App\Http\Controllers\Sms\SmsController;
 use App\Http\Controllers\StatusController;
 use App\Http\Controllers\Blog\BlogCategoryController;
 use App\Http\Controllers\Blog\AuthorController;
+use App\Http\Controllers\Blog\BlogController;
 
 Route::prefix('device')->group(function (){
     Route::apiResource('category',DeviceCategotyController::class)
@@ -73,3 +74,6 @@ Route::prefix('blog')->group(function (){
     Route::get('index-author',[AuthorController::class,'index']);
     Route::get('show-author/{author}',[AuthorController::class,'show']);
 });
+Route::apiResource('blog',BlogController::class)->middleware('check.rol:1,4');
+Route::get('index-blog',[BlogController::class,'index']);
+Route::post('show-blog/{blog}',[BlogController::class,'show']);

@@ -15,7 +15,7 @@ class BlogCategoryController extends Controller
     public function index()
     {
         $blog_category = BlogCategory::all();
-        return response()->json($blog_category);
+        return response()->json($blog_category,200);
     }
 
     /**
@@ -28,51 +28,46 @@ class BlogCategoryController extends Controller
             'which_web'=>'required'
         ]);
         if ($v->fails()){
-            return response()->json($v->errors());
+            return response()->json([$v->errors(),'message'=>'اطلاعات وارد شده معتبر نیست'], 422);
+
         }
-        BlogCategory::created($v);
-        return response()->json('success');
+        $blogCategory= BlogCategory::create($v->validate());
+        return response()->json(['message'=>'دسته وبلاگ با موفقیت ایجاد شد','data'=>$blogCategory],201);
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(BlogCategory $blogCategory)
     {
-        $blog_category = BlogCategory::find($id);
-        return response()->json($blog_category);
+        return response()->json($blogCategory,200);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request,BlogCategory $blogCategory)
     {
-        $blog_category = BlogCategory::find($id);
-        if (!$blog_category) {
-            return response()->json(['error' => 'Device category not found'], 404);
-        }
-        $validator = Validator::make($request->all(), [
+        $v = Validator::make($request->all(), [
             'name' => 'required|max:225',
             'which_web'=> 'required'
         ]);
-        if ($validator->fails()){
-            return response()->json($validator->errors(), 422);
+        if ($v->fails()){
+            return response()->json([$v->errors(),'message'=>'اطلاعات وارد شده معتبر نیست'], 422);
         }
-        $blog_category->update($request->all());
+        $blogCategory->update($v->validate());
         return response()->json([
-            'message' => 'Device category updated successfully',
-            'data' => $blog_category
-        ]);
+            'message' => 'دسته وبلاگ با موفقیت به روزرسانی شد',
+            'data' => $blogCategory
+        ],200);
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(BlogCategory $blogCategory)
     {
-        $blog_category= BlogCategory::find($id);
         $blog_category->delete();
-        return response()->json(['message' => 'Device category deleted successfully']);
+        return response()->json(['message' => 'دسته وبلاگ با موفقیت پاک شد']);
     }
 }

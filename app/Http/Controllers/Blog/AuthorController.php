@@ -13,7 +13,7 @@ class AuthorController extends Controller
     public function index()
     {
         $author = Author::all();
-        return response()->json($author);
+        return response()->json($author,200);
     }
     public function store(Request $request)
     {
@@ -25,9 +25,9 @@ class AuthorController extends Controller
             'author_photo' => 'required|image|max:1024'
         ]);
         if ($v->fails()){
-            return response()->json($v->errors(),422);
+            return response()->json([$v->errors(),'message'=>'اطلاعات وارد شده معتبر نیست'], 422);
         }
-        $author = Author::create($request->all());
+        $author = Author::create($v->validate());
         return response()->json($author);
     }
     public function show(string $id)

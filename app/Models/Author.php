@@ -11,4 +11,8 @@ class Author extends Model
     use Notifiable,HasFactory;
     protected $table = 'authors';
     protected $guarded = [];
+    public function blogs()
+    {
+        return $this->hasMany(Blog::class, 'author_id');
+    }
 }
