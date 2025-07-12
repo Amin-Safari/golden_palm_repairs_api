@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Device;
 
 use App\Http\Controllers\Controller;
 use App\Models\Device;
+use App\Models\User;
 use App\Services\SmsService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
@@ -26,12 +27,14 @@ class DeliverController extends Controller
         if (!$device) {
             return response()->json(['error' => 'Device not found'], 404);
         }
-
+        $user = User::where('id', $device->customer_id)->first();
+        $mobile = $user->mobile;
+        $name = $user->name;
         $code = rand(100000, 999999);
         $text = ' سلام '. $name.' عزیز '."\n"."کد احراز هویت  شما:"."\"".$code."\""."\n"."تعمیرات نخل طلایی";
-        $mas=$smsService->sendSms($request->mobile,$text);
+        $mas=$smsService->sendSms($mobile,$text);
 
-        Cache::put($device->mobile, $code, 300); // 5 دقیقه
+        Cache::put($validator->v_code, $code, 300); // 5 دقیقه
 
         return response()->json([
             'message' => $mas,
@@ -56,12 +59,12 @@ class DeliverController extends Controller
             return response()->json(['error' => 'Device not found'], 404);
         }
 
-        $code = Cache::get($device->mobile);
+        $code = Cache::get($validator->v_code);
 
         if ($code != $request->code) {
             return response()->json(['error' => 'Invalid verification code'], 401);
         }
-
+        $device->update(['status' => 'delivered']);
         // پاک کردن کد از کش پس از استفاده موفق
         Cache::forget($device->mobile);
 
