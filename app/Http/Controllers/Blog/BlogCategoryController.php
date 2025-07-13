@@ -28,45 +28,53 @@ class BlogCategoryController extends Controller
             'which_web'=>'required'
         ]);
         if ($v->fails()){
-            return response()->json([$v->errors(),'message'=>'اطلاعات وارد شده معتبر نیست'], 422);
-
+            $this->fail($v);
         }
-        $blogCategory= BlogCategory::create($v->validate());
-        return response()->json(['message'=>'دسته وبلاگ با موفقیت ایجاد شد','data'=>$blogCategory],201);
+        $blog_category= BlogCategory::create($v->validate());
+        return $this->add('دسته وبلاگ',$blog_category);
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(BlogCategory $blogCategory)
+    public function show($id)
     {
-        return response()->json($blogCategory,200);
+        $blog_category = BlogCategory::find($id);
+        if (!$blog_category){
+            return $this->found();
+        }
+        return response()->json($blog_category,200);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request,BlogCategory $blogCategory)
+    public function update(Request $request,$id)
     {
+        $blog_category =BlogCategory::find($id);
+        if (!$blog_category){
+            return $this->found();
+        }
         $v = Validator::make($request->all(), [
             'name' => 'required|max:225',
             'which_web'=> 'required'
         ]);
         if ($v->fails()){
-            return response()->json([$v->errors(),'message'=>'اطلاعات وارد شده معتبر نیست'], 422);
+            return $this->fail($v);
         }
-        $blogCategory->update($v->validate());
-        return response()->json([
-            'message' => 'دسته وبلاگ با موفقیت به روزرسانی شد',
-            'data' => $blogCategory
-        ],200);
+        $blog_category->update($v->validate());
+        return $this->up('دسته وبلاگ',$blog_category);
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(BlogCategory $blogCategory)
+    public function destroy( $id)
     {
+        $blog_category = BlogCategory::find($id);
+        if (!$blog_category){
+            return $this->found();
+        }
         $blog_category->delete();
         return response()->json(['message' => 'دسته وبلاگ با موفقیت پاک شد']);
     }

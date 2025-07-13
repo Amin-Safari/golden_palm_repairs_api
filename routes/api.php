@@ -74,6 +74,6 @@ Route::prefix('blog')->group(function (){
     Route::get('index-author',[AuthorController::class,'index']);
     Route::get('show-author/{author}',[AuthorController::class,'show']);
 });
-Route::apiResource('blog',BlogController::class)->middleware('check.rol:1,4');
+Route::apiResource('blog',BlogController::class)->middleware('check.role:1,4');
 Route::get('index-blog',[BlogController::class,'index']);
 Route::post('show-blog/{blog}',[BlogController::class,'show']);

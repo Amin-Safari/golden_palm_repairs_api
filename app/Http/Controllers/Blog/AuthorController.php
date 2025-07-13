@@ -25,16 +25,16 @@ class AuthorController extends Controller
             'author_photo' => 'required|image|max:1024'
         ]);
         if ($v->fails()){
-            return response()->json([$v->errors(),'message'=>'اطلاعات وارد شده معتبر نیست'], 422);
+            return $this->fail($v);
         }
         $author = Author::create($v->validate());
-        return response()->json($author);
+        return $this->add("نویسنده",$author);
     }
     public function show(string $id)
     {
         $author = Author::find($id);
         if (!$author){
-            return response()->json('not found',404);
+            return $this->found();
         }
         return response()->json($author);
     }
@@ -42,7 +42,7 @@ class AuthorController extends Controller
     {
         $author = Author::find($id);
         if (!$author){
-            return response()->json('not found',404);
+            return $this->found();
         }
         $v = Validator::make($request->all(),[
             'name' => 'required|max:225',
@@ -52,18 +52,18 @@ class AuthorController extends Controller
             'author_photo' => 'required|image|max:1024'
         ]);
         if ($v->fails()){
-            return response()->json($v->errors(),422);
+            return $this->fail($v);
         }
         $author->update($request->all());
-        return response()->json([
-            'message' => 'Author updated successfully',
-            'data' => $author
-        ]);
+        return $this->up('نویسنده',$author);
     }
     public function destroy(string $id)
     {
         $author = Author::find($id);
+        if (!$author){
+            return $this->found();
+        }
         $author->delete();
-        return response()->json(['message' => 'Author deleted successfully']);
+        return $this->delete('نویسنده');
     }
 }

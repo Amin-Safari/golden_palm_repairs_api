@@ -28,22 +28,28 @@ class BlogController extends Controller
             'video_path' => 'nullable',
             'audio_path' => 'nullable'
         ]);
-
-        if ($v->fails()) {
-            return response()->json([$v->errors(),'message'=>'اطلاعات وارد شده معتبر نیست'], 422);
+        if ($v->fails()){
+            return $this->fail($v);
         }
-
         $blog = Blog::create($v->validated());
-        return response()->json(['message' => 'وبلاگ با موفقیت ایجاد شد', 'data' => $blog],201);
+        return $this->add('وبلاگ', $blog);
     }
 
-    public function show(Blog $blog)
+    public function show($id)
     {
+        $blog = Blog::find($id);
+        if (!$blog){
+            return $this->found();
+        }
         return response()->json($blog->load(['author', 'category']),200);
     }
 
-    public function update(Request $request, Blog $blog)
+    public function update(Request $request,$id)
     {
+        $blog = Blog::find($id);
+        if (!$blog){
+            return $this->found();
+        }
         $v = Validator::make($request->all(), [
             'title' => 'required|string|max:225',
             'tags' => 'required|string|max:225',
@@ -55,18 +61,20 @@ class BlogController extends Controller
             'video_path' => 'nullable',
             'audio_path' => 'nullable'
         ]);
-
-        if ($v->fails()) {
-            return response()->json([$v->errors(),'message'=>'اطلاعات وارد شده معتبر نیست'], 422);
+        if ($v->fails()){
+            return $this->fail($v);
         }
-
         $blog->update($v->validated());
-        return response()->json(['message' => 'بلاگ با موفقیت به روزرسانی شد', 'data' => $blog],200);
+        return $this->up('وبلاگ',$blog);
     }
 
-    public function destroy(Blog $blog)
+    public function destroy($id)
     {
+        $blog = Blog::find($id);
+        if (!$blog){
+            return $this->found();
+        }
         $blog->delete();
-        return response()->json(['message' => 'بلاگ با موفقیت حذف شد'],200);
+        return $this->delete('وبلاگ');
     }
 }
