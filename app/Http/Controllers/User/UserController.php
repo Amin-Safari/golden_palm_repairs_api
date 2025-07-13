@@ -53,7 +53,7 @@ class UserController extends Controller
         $code = rand(100000, 999999);
         $expiresAt = now()->addMinutes(5);
 
-        Cache::put('auth_code_' . $request->mobile, $code, $expiresAt);
+        Cache::put('auth_code_' . $request->mobile, $code, 5);
 
         $text = ' سلام '. $name.' عزیز '."\n"."کد ورود شما:"."\"".$code."\""."\n"."تعمیرات نخل طلایی";
         $mas=$smsService->sendSms($request->mobile,$text);
