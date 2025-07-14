@@ -1,0 +1,8 @@
+{
+    "filament::pages/dashboard.title": "داشبورد",
+    "filament::pages/dashboard.widgets.actions.new.label": "جدید",
+    "filament::resources/pages/list-records.actions.create.label": "ایجاد",
+    "filament::resources/pages/edit-record.actions.delete.label": "حذف",
+    "filament::resources/pages/edit-record.actions.save.label": "ذخیره",
+    "filament::resources/pages/view-record.actions.edit.label": "ویرایش"
+}

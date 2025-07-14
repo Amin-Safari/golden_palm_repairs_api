@@ -25,7 +25,6 @@ class BlogCategoryController extends Controller
     {
         $v = Validator::make($request->all(),[
             'name'=>'required|max:225',
-            'which_web'=>'required'
         ]);
         if ($v->fails()){
             $this->fail($v);
@@ -57,7 +56,6 @@ class BlogCategoryController extends Controller
         }
         $v = Validator::make($request->all(), [
             'name' => 'required|max:225',
-            'which_web'=> 'required'
         ]);
         if ($v->fails()){
             return $this->fail($v);

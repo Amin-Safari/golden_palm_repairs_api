@@ -20,8 +20,6 @@ return new class extends Migration
             $table->foreignId('blog_category_id')->constrained('blog_categories')->cascadeOnDelete();
             $table->text('body');
             $table->string('image_path')->nullable();
-            $table->string('video_path')->nullable();
-            $table->string('audio_path')->nullable();
             $table->timestamps();
         });
     }

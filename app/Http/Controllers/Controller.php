@@ -9,7 +9,7 @@ abstract class Controller
     public function add($txt ,$data)
     {
         return response()->json([
-            'message'=>'با موفقیت ایجاد شد'. $txt,
+            'message'=>'با موفقیت اضافه شد'. $txt,
             'data'=>$data
         ], 201);
     }

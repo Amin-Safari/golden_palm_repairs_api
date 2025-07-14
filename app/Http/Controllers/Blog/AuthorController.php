@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Blog;
 use App\Http\Controllers\Controller;
 use App\Models\Author;
 use App\Models\DeviceCategory;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
@@ -51,6 +52,7 @@ class AuthorController extends Controller
             'about' => 'required',
             'author_photo' => 'required|image|max:1024'
         ]);
+
         if ($v->fails()){
             return $this->fail($v);
         }

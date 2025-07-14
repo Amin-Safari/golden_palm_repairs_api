@@ -13,6 +13,7 @@ use App\Http\Controllers\StatusController;
 use App\Http\Controllers\Blog\BlogCategoryController;
 use App\Http\Controllers\Blog\AuthorController;
 use App\Http\Controllers\Blog\BlogController;
+use App\Http\Controllers\ImageController;
 
 Route::prefix('device')->group(function (){
     Route::apiResource('category',DeviceCategotyController::class)
@@ -77,3 +78,6 @@ Route::prefix('blog')->group(function (){
 Route::apiResource('blog',BlogController::class)->middleware('check.role:1,4');
 Route::get('index-blog',[BlogController::class,'index']);
 Route::post('show-blog/{blog}',[BlogController::class,'show']);
+
+Route::post('images', [ImageController::class, 'store']);
+Route::delete('images/{path}', [ImageController::class, 'destroy'])->where('path', '.*');
