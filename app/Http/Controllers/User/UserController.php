@@ -107,7 +107,7 @@ class UserController extends Controller
         $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:200',
             'mobile' => 'required|string|size:11|unique:users,mobile',
-            'role' => 'required|string|in:admin,user,technician' // مثال برای نقش‌های مجاز
+            'role' => 'required|intiger' // مثال برای نقش‌های مجاز
         ]);
 
         if ($validator->fails()) {
@@ -123,7 +123,7 @@ class UserController extends Controller
         ]);
 
         return response()->json([
-            'message' => 'mas',
+            'message' => $mas,
             'user' => $user
         ], 201);
     }
