@@ -56,9 +56,9 @@ class UserController extends Controller
         Cache::put('auth_code_' . $request->mobile, $code, 5);
 
         $text = ' سلام '. $name.' عزیز '."\n"."کد ورود شما:"."\"".$code."\""."\n"."تعمیرات نخل طلایی";
-        $mas=$smsService->sendSms($request->mobile,$text);
+//        $mas=$smsService->sendSms($request->mobile,$text);
         return response()->json([
-            'message' => $mas,
+            'message' => $code,
             'expires_at' => $expiresAt->toDateTimeString()
         ]);
     }
@@ -67,7 +67,7 @@ class UserController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'mobile' => 'required|string|size:11',
-            'code' => 'required|numeric'
+            'code' => 'required'
         ]);
 
         if ($validator->fails()) {

@@ -11,54 +11,48 @@ use App\Http\Controllers\RequestController;
 use App\Http\Controllers\User\UserDeviceController;
 use App\Http\Controllers\Sms\SmsController;
 use App\Http\Controllers\StatusController;
-use App\Http\Middleware\CheckRole;;
+use App\Http\Middleware\CheckRole;
 
 Route::prefix('device')->group(function (){
-    Route::apiResource('category',DeviceCategoryController::class)
-        ->middleware('checkRole::class:1,2');
-    Route::apiResource('description',DeviceDescriptionController::class)
-        ->middleware('checkRole::class:1,2');
-    Route::apiResource('repair',DeviceController::class)
-        ->middleware('checkRole::class:1,2');
-    Route::post('search_device',[DeviceController::class,'search_device'])
-        ->middleware('checkRole::class:1,2');
-    Route::post('search_c_device',[DeviceController::class,'search_cdevice'])
-        ->middleware('checkRole::class:1,2');
-    Route::post('search_date',[DeviceController::class,'search_date'])
-        ->middleware('checkRole::class:1,2');
-});
+    Route::apiResource('category',DeviceCategoryController::class);
+    Route::apiResource('description',DeviceDescriptionController::class);
+    Route::apiResource('repair',DeviceController::class);
+    Route::post('search_device',[DeviceController::class,'search_device']);
+    Route::post('search_c_device',[DeviceController::class,'search_cdevice']);
+    Route::post('search_date',[DeviceController::class,'search_date']);
+})->middleware([CheckRole::class,'1,2']);
 Route::prefix('user')->group(function (){
-    Route::post('check',[UserController::class,'check'])->middleware('checkRole::class:1');
+    Route::post('check',[UserController::class,'check'])->middleware([CheckRole::class,'1']);
     Route::post('auth',[UserController::class,'Auth']);
     Route::post('login',[UserController::class,'login']);
     Route::post('create_user',[UserController::class,'createUser'])
-        ->middleware('checkRole::class:1');
+        ->middleware([CheckRole::class,'1']);
     Route::post('search_user',[UserController::class,'searchUser'])
-        ->middleware('checkRole::class:1');
+        ->middleware([CheckRole::class,'1']);
     Route::post('logout',[UserController::class,'logout'])
         ->middleware('auth:sanctum');
     Route::get('technician',[UserController::class,'technician'])
-        ->middleware('checkRole::class:1');
+        ->middleware([CheckRole::class,'1']);
 });
 Route::prefix('delivery')->group(function (){
     Route::post('v_code',[DeliverController::class,'v_code'])
-        ->middleware('checkRole::class:1');
+        ->middleware([CheckRole::class,'1']);
     Route::post('check_code',[DeliverController::class,'check_code'])
-        ->middleware('checkRole::class:1');
+        ->middleware([CheckRole::class,'1']);
 });
 
 Route::apiResource('technician-request',RequestController::class)
-    ->middleware('checkRole::class:1,2');
+    ->middleware([CheckRole::class,'1,2']);
 Route::get('user-device',[UserDeviceController::class,'customerDevice'])
     ->middleware('auth:sanctum');
 Route::get('technician-device',[UserDeviceController::class,'technicianDevice'])
-    ->middleware('checkRole::class:1,2');
+    ->middleware([CheckRole::class,'1,2']);
 
 Route::apiResource('sms',SmsController::class)
-    ->middleware('checkRole::class:1');
+    ->middleware([CheckRole::class,'1']);
 Route::post('send-sms',[SmsController::class,'sendSms'])
-    ->middleware('checkRole::class:1');
+    ->middleware([CheckRole::class,'1']);
 
 Route::get('status',[StatusController::class,'index']);
 Route::put('status',[StatusController::class,'update'])
-    ->middleware('checkRole::class:1');
+    ->middleware([CheckRole::class,'1']);
