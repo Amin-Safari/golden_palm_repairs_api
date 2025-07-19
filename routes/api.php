@@ -37,6 +37,8 @@ Route::prefix('user')->group(function (){
         ->middleware('checkRole::class:1');
     Route::post('logout',[UserController::class,'logout'])
         ->middleware('auth:sanctum');
+    Route::get('technician',[UserController::class,'technician'])
+        ->middleware('checkRole::class:1');
 });
 Route::prefix('delivery')->group(function (){
     Route::post('v_code',[DeliverController::class,'v_code'])

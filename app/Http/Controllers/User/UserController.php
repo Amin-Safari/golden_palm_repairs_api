@@ -145,4 +145,9 @@ class UserController extends Controller
 
         return response()->json($users);
     }
+    public function technician()
+    {
+        $technician = User::where('role',1)->orWhere('role', 2)->get();
+        return response()->json($technician);
+    }
 }
