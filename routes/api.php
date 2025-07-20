@@ -24,10 +24,18 @@ Route::prefix('device')->middleware([CheckRole::class,'1,2'])->group(function ()
     Route::get('count-fixed', [DeviceController::class,'countFixed']);
     Route::get('count-delivered-today',[DeviceController::class,'countDeliveredWData']);
     Route::get('count-fixing',[DeviceController::class,'countFixing']);
+    Route::get('fixed-devices',[DeviceController::class,'fixedDevices']);
 });
 
 Route::prefix('financial')->middleware([CheckRole::class,'1'])->group(function (){
-    Route::get('income-today',[FinancialController::class,'incomeToday']);
+    Route::get('income-this-month',[FinancialController::class,'incomeThisMonth'])
+    ->middleware([CheckRole::class,'1']);
+    Route::get('income-today',[FinancialController::class,'incomeToday'])
+    ->middleware([CheckRole::class,'1']);
+    Route::get('income-this-year',[FinancialController::class,'incomeThisYear'])
+    ->middleware([CheckRole::class,'1']);
+    Route::get('technician-income',[FinancialController::class,'technicianIncome'])
+    ->middleware([CheckRole::class,'2']);
 });
 
 Route::prefix('user')->group(function (){

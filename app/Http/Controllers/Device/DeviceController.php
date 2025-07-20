@@ -47,7 +47,7 @@ class DeviceController extends Controller
             'device_name' => 'required|string|max:255',
             'appearance_details' => 'nullable|string',
             'prepaid' => 'nullable|numeric',
-            'delivered_at' => 'required|date'
+            'delivered_at' => 'required|'
         ]);
 
         if ($deviceValidator->fails() || $userValidator->fails()) {
@@ -81,7 +81,7 @@ class DeviceController extends Controller
                 return response()->json([
                     'message' => 'Device created and SMS sent successfully',
                     'device' => $device,
-                    'sms_response' => json_decode($response)
+                    'sms_response' => $response
                 ]);
             } catch(Exception $e) {
                 return response()->json([
@@ -237,4 +237,12 @@ class DeviceController extends Controller
         $count = Device::where('status', 'received')->count();
         return response()->json($count);
     }
+    public function fixedDevices()
+{
+    $devices = Device::where('status', 'fixed')
+        ->with(['customer', 'technician']) // اگر رابطه‌هایی وجود دارد
+        ->get();
+
+    return response()->json($devices);
+}
 }
