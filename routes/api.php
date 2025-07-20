@@ -12,15 +12,24 @@ use App\Http\Controllers\User\UserDeviceController;
 use App\Http\Controllers\Sms\SmsController;
 use App\Http\Controllers\StatusController;
 use App\Http\Middleware\CheckRole;
+use App\Http\Controllers\Financial\FinancialController;
 
-Route::prefix('device')->group(function (){
+Route::prefix('device')->middleware([CheckRole::class,'1,2'])->group(function (){
     Route::apiResource('category',DeviceCategoryController::class);
     Route::apiResource('description',DeviceDescriptionController::class);
     Route::apiResource('repair',DeviceController::class);
     Route::post('search_device',[DeviceController::class,'search_device']);
     Route::post('search_c_device',[DeviceController::class,'search_cdevice']);
     Route::post('search_date',[DeviceController::class,'search_date']);
-})->middleware([CheckRole::class,'1,2']);
+    Route::get('count-fixed', [DeviceController::class,'countFixed']);
+    Route::get('count-delivered-today',[DeviceController::class,'countDeliveredWData']);
+    Route::get('count-fixing',[DeviceController::class,'countFixing']);
+});
+
+Route::prefix('financial')->middleware([CheckRole::class,'1'])->group(function (){
+    Route::get('income-today',[FinancialController::class,'incomeToday']);
+});
+
 Route::prefix('user')->group(function (){
     Route::post('check',[UserController::class,'check'])->middleware([CheckRole::class,'1']);
     Route::post('auth',[UserController::class,'Auth']);

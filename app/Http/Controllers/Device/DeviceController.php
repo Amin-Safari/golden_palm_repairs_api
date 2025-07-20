@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Device;
 use App\Models\User;
 use App\Services\smsService;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
@@ -217,5 +218,23 @@ class DeviceController extends Controller
             ->get();
 
         return response()->json($devices);
+    }
+    public function countFixed()
+    {
+        $count = Device::where('status', 'fixed')->count();
+        return response()->json($count);
+    }
+    public function countDeliveredWData()
+    {
+        $count =  Device::whereBetween('delivered_real_at', [
+            Carbon::today(),
+            Carbon::tomorrow()
+        ])->count();
+        return response()->json($count);
+    }
+    public function countFixing()
+    {
+        $count = Device::where('status', 'received')->count();
+        return response()->json($count);
     }
 }

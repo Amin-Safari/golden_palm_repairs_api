@@ -10,7 +10,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 class Device extends Model
 {
     use HasFactory, Notifiable;
-    protected $table = 'device';
+    protected $table = 'devices';
     protected $fillable = [
         'customer_id',
         'technician_id',
