@@ -15,13 +15,12 @@ use Exception;
 
 class DeviceController extends Controller
 {
-    protected function generateUniqueDeviceCode($deviceId, $customerId)
+    protected function generateUniqueDeviceCode($deviceId)
     {
         do {
-            $code = sprintf('%s-%04d-%04d',
+            $code = sprintf('%s-%05d',
                 Str::upper(Str::random(2)),
-                $deviceId,
-                $customerId
+                $deviceId
             );
         } while (Device::where('verification_code', $code)->exists());
 
@@ -71,7 +70,7 @@ class DeviceController extends Controller
             ));
 
             $device->update([
-                'verification_code' => $this->generateUniqueDeviceCode($device->id, $customer->id)
+                'verification_code' => $this->generateUniqueDeviceCode($device->id)
             ]);
             // ارسال پیامک
             try {
