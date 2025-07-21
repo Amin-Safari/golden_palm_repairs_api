@@ -40,7 +40,7 @@ class DeviceCategoryController extends Controller
      */
     public function show(string $id)
     {
-        $device_category = DeviceCategory::find($id);
+        $device_category = DeviceCategory::find($id)->with('description');
         return response()->json($device_category);
     }
 

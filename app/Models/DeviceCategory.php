@@ -11,5 +11,7 @@ class DeviceCategory extends Model
     use HasFactory,Notifiable;
     protected $table = 'device_categories';
     protected $guarded=[];
-
+    public function description(){
+        return $this->hasMany(DeviceDescription::class , 'category_id');
+    }
 }
