@@ -13,6 +13,7 @@ use App\Http\Controllers\Sms\SmsController;
 use App\Http\Controllers\StatusController;
 use App\Http\Middleware\CheckRole;
 use App\Http\Controllers\Financial\FinancialController;
+use App\Http\Controllers\User\UserMessageController;
 
 Route::prefix('device')->middleware([CheckRole::class,'1,2'])->group(function (){
     Route::apiResource('category',DeviceCategoryController::class);
@@ -50,6 +51,9 @@ Route::prefix('user')->group(function (){
         ->middleware('auth:sanctum');
     Route::get('technician',[UserController::class,'technician'])
         ->middleware([CheckRole::class,'1']);
+    Route::get('Message', [UserMessageController::class,'index'])
+        ->middleware([CheckRole::class,'1']);
+    Route::post('Message',[UserMessageController::class,'store']);
 });
 Route::prefix('delivery')->group(function (){
     Route::post('v_code',[DeliverController::class,'v_code'])
