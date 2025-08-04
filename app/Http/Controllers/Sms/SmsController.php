@@ -10,17 +10,17 @@ use Illuminate\Support\Facades\Validator;
 
 class SmsController extends Controller
 {
-    public function sendSms(Request $request,smsService $smsService)
+    public function sendSms(Request $request, smsService $smsService)
     {
-        $validate = Validator::make($request->all(),[
-            'mobile'=> 'required|array',
-            'text'=> 'required|string'
+        $validate = Validator::make($request->all(), [
+            'mobile' => 'required|array',
+            'text' => 'required|string'
         ]);
-        if ($validate->fails()){
+        if ($validate->fails()) {
             return response()->json($validate->errors());
         }
-        $mas = $smsService->sendBulkSms($request->mobile,$request->text);
-        return response()->json(['message'=>$mas]);
+        $mas = $smsService->sendBulkSms($request->mobile, $request->text);
+        return response()->json(['message' => $mas]);
     }
 
     /**
@@ -39,7 +39,7 @@ class SmsController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'title' => 'required|string|max:255',
-            'body'=> 'required|string'
+            'body' => 'required|string'
         ]);
 
         if ($validator->fails()) {
@@ -73,7 +73,7 @@ class SmsController extends Controller
 
         $validator = Validator::make($request->all(), [
             'title' => 'required|string|max:255',
-            'body'=> 'required|string'
+            'body' => 'required|string'
         ]);
 
         if ($validator->fails()) {

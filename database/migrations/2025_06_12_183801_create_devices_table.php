@@ -4,8 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
-{
+return new class extends Migration {
     /**
      * Run the migrations.
      */
@@ -19,10 +18,11 @@ return new class extends Migration
             $table->string('device_name');
             $table->text('device_problem')->nullable();
             $table->text('repair_details')->nullable();
-            $table->decimal('prepaid', 15, 2)->nullable();
-            $table->decimal('price', 15, 2)->nullable();
-            $table->decimal('repair_price', 15, 2)->nullable();
-            $table->string('status')->default('received')->comment('received,in_progress,fixed,delivered,canceled');
+            $table->text('appearance_details')->nullable();
+            $table->decimal('prepaid')->nullable();
+            $table->decimal('price')->nullable();
+            $table->decimal('repair_price')->nullable();
+            $table->string('status')->default('received')->comment('received,in_progress,fixed,confirmed,delivered,canceled');
             $table->string('repair_status')->default('unpaid')->comment('unpaid,pay');
             $table->string('verification_code')->nullable();
             $table->dateTime('received_at')->nullable();

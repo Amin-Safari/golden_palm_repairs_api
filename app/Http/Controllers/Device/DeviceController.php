@@ -33,7 +33,7 @@ class DeviceController extends Controller
         return response()->json($devices);
     }
 
-    public function store(Request $request,smsService $smsService)
+    public function store(Request $request, smsService $smsService)
     {
         $userValidator = Validator::make($request->all(), [
             'mobile' => 'required|size:11',
@@ -74,15 +74,15 @@ class DeviceController extends Controller
             ]);
             // ارسال پیامک
             try {
-                $text= " سلام ".$request->name ." عزیز ". "\n". " دستگاه ". $request->device_name." با کد رهگیری: "."\"".$device->verification_code."\""." با موفقیت ثبت شد". "\n"."تعمیرات نخل طلایی";
-                $response = $smsService->sendSms($request->mobile,$text);
+                $text = " سلام " . $request->name . " عزیز " . "\n" . " دستگاه " . $request->device_name . " با کد رهگیری: " . "\"" . $device->verification_code . "\"" . " با موفقیت ثبت شد" . "\n" . "تعمیرات نخل طلایی";
+                $response = $smsService->sendSms($request->mobile, $text);
 
                 return response()->json([
                     'message' => 'Device created and SMS sent successfully',
                     'device' => $device,
                     'sms_response' => $response
                 ]);
-            } catch(Exception $e) {
+            } catch (Exception $e) {
                 return response()->json([
                     'message' => 'Device created but SMS failed to send',
                     'device' => $device,
@@ -108,19 +108,19 @@ class DeviceController extends Controller
         return response()->json($device);
     }
 
-    public function update(Request $request, string $id,smsService $smsService)
+    public function update(Request $request, string $id, smsService $smsService)
     {
-        $device= Device::find($id);
+        $device = Device::find($id);
         if (!$device) {
             return response()->json(['error' => 'Device not found'], 404);
         }
-        $Cid= $device->customer_id;
-        $user=User::where('id',$Cid)->value('name');
-        $mobile=User::where('id',$Cid)->value('mobile');
+        $Cid = $device->customer_id;
+        $user = User::where('id', $Cid)->value('name');
+        $mobile = User::where('id', $Cid)->value('mobile');
         $device->update($request->all());
 
-        if ($device->status=='fixed'){
-            $text= " سلام ".$user ." عزیز ". "\n". " دستگاه ". $device->device_name." با کد رهگیری: "."\"".$device->verification_code."\""." آماده تحویل است. ". "\n"."تعمیرات نخل طلایی";
+        if ($device->status == 'fixed') {
+            $text = " سلام " . $user . " عزیز " . "\n" . " دستگاه " . $device->device_name . " با کد رهگیری: " . "\"" . $device->verification_code . "\"" . " آماده تحویل است. " . "\n" . "تعمیرات نخل طلایی";
             $smsService->sendSms($mobile, $text);
         }
         return response()->json([
@@ -130,7 +130,7 @@ class DeviceController extends Controller
     }
 
 
-    public function destroy(string $id,smsService $smsService)
+    public function destroy(string $id, smsService $smsService)
     {
         $device = Device::find($id);
 
@@ -138,12 +138,12 @@ class DeviceController extends Controller
             return response()->json(['message' => 'Device not found'], 404);
         }
 
-        $Cid= $device->customer_id;
-        $user=User::where('id',$Cid)->value('name');
-        $mobile=User::where('id',$Cid)->value('mobile');
-        $text= " سلام ".$user ." عزیز ". "\n". " دستگاه ". $device->device_name." با کد رهگیری: "."\"".$device->verification_code."\""." حذف شد
+        $Cid = $device->customer_id;
+        $user = User::where('id', $Cid)->value('name');
+        $mobile = User::where('id', $Cid)->value('mobile');
+        $text = " سلام " . $user . " عزیز " . "\n" . " دستگاه " . $device->device_name . " با کد رهگیری: " . "\"" . $device->verification_code . "\"" . " حذف شد
 
-        . ". "\n"."تعمیرات نخل طلایی";
+        . " . "\n" . "تعمیرات نخل طلایی";
         $smsService->sendSms($mobile, $text);
 
         $device->delete();
@@ -218,30 +218,34 @@ class DeviceController extends Controller
 
         return response()->json($devices);
     }
+
     public function countFixed()
     {
         $count = Device::where('status', 'fixed')->count();
         return response()->json($count);
     }
+
     public function countDeliveredWData()
     {
-        $count =  Device::whereBetween('delivered_real_at', [
+        $count = Device::whereBetween('delivered_real_at', [
             Carbon::today(),
             Carbon::tomorrow()
         ])->count();
         return response()->json($count);
     }
+
     public function countFixing()
     {
         $count = Device::where('status', 'received')->count();
         return response()->json($count);
     }
-    public function fixedDevices()
-{
-    $devices = Device::where('status', 'fixed')
-        ->with(['customer', 'technician']) // اگر رابطه‌هایی وجود دارد
-        ->get();
 
-    return response()->json($devices);
-}
+    public function fixedDevices()
+    {
+        $devices = Device::where('status', 'fixed')
+            ->with(['customer', 'technician']) // اگر رابطه‌هایی وجود دارد
+            ->get();
+
+        return response()->json($devices);
+    }
 }

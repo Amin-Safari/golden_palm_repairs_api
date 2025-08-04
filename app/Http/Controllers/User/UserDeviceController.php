@@ -12,13 +12,14 @@ class UserDeviceController extends Controller
     public function customerDevice()
     {
         $userid = Auth::guard('sanctum')->user()->id;
-        $device = Device::where('customer_id',$userid)->get();
+        $device = Device::where('customer_id', $userid)->get();
         return response()->json($device);
     }
+
     public function technicianDevice()
     {
         $userid = Auth::guard('sanctum')->user()->id;
-        $device = Device::where('technician_id',$userid)->get();
+        $device = Device::where('technician_id', $userid)->get();
         return response()->json($device);
     }
 }

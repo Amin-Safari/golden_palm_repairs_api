@@ -9,11 +9,12 @@ use Illuminate\Support\Facades\Validator;
 
 class UserMessageController extends Controller
 {
-    public function index() 
+    public function index()
     {
         $UserMessage = UserMessage::all();
         return response()->json($UserMessage);
     }
+
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [

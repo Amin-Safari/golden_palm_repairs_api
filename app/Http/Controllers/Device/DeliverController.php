@@ -12,7 +12,7 @@ use Illuminate\Support\Facades\Validator;
 
 class DeliverController extends Controller
 {
-    public function v_code(Request $request,SmsService $smsService)
+    public function v_code(Request $request, SmsService $smsService)
     {
         $validator = Validator::make($request->all(), [
             'v_code' => 'required|exists:devices,verification_code'
@@ -31,8 +31,8 @@ class DeliverController extends Controller
         $mobile = $user->mobile;
         $name = $user->name;
         $code = rand(100000, 999999);
-        $text = ' سلام '. $name.' عزیز '."\n"."کد احراز هویت  شما:"."\"".$code."\""."\n"."تعمیرات نخل طلایی";
-        $mas=$smsService->sendSms($mobile,$text);
+        $text = ' سلام ' . $name . ' عزیز ' . "\n" . "کد احراز هویت  شما:" . "\"" . $code . "\"" . "\n" . "تعمیرات نخل طلایی";
+        $mas = $smsService->sendSms($mobile, $text);
 
         Cache::put($validator->v_code, $code, 300); // 5 دقیقه
 

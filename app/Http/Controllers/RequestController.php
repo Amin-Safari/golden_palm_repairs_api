@@ -15,29 +15,29 @@ class RequestController extends Controller
      */
     public function index()
     {
-        $Request =Request::all();
+        $Request = Request::all();
         return response()->json($Request);
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request,smsService $smsService)
+    public function store(Request $request, smsService $smsService)
     {
         $validator = Validator::make($request->all(), [
-            'technician_id'=>'required|exists:users,id',
+            'technician_id' => 'required|exists:users,id',
             'title' => 'required|string|max:255',
-            'request'=>'required|string'
+            'request' => 'required|string'
         ]);
 
         if ($validator->fails()) {
-            return response()->json( $validator->errors(), 422);
+            return response()->json($validator->errors(), 422);
         }
-        $user= User::where('id',$request->technician_id)->value('name');
-        $text= "سلام چناب آقای صفری"."\n"."یک درخواست از طرف ".$user."با موضوع".$request->title."دارید". "\n"."تعمیرات نخل طلایی";
-        $mas = $smsService->sendSms('09123111903',$text);
+        $user = User::where('id', $request->technician_id)->value('name');
+        $text = "سلام جناب آقای صفری" . "\n" . "یک درخواست از طرف " . $user . "با موضوع" . $request->title . "دارید" . "\n" . "تعمیرات نخل طلایی";
+        $mas = $smsService->sendSms('09123111903', $text);
         $Request = Request::create($request->all());
-        return response()->json(['message'=>$mas,$Request]);
+        return response()->json(['message' => $mas, $Request]);
     }
 
     /**
@@ -54,7 +54,7 @@ class RequestController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        $Request= Request::find($id);
+        $Request = Request::find($id);
 
         // اگر آیتم پیدا نشود
         if (!$Request) {
@@ -63,7 +63,7 @@ class RequestController extends Controller
 
         $validator = Validator::make($request->all(), [
             'title' => 'required|string|max:225',
-            'request'=>'required|string'
+            'request' => 'required|string'
         ]);
 
         if ($validator->fails()) {
