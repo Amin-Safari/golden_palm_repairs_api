@@ -23,6 +23,7 @@ class UserMessageController extends Controller
             'phone' => 'required|size:11',
             'subject' => 'required|max:225',
             'message' => 'required|max:65535',
+            'status'=> 'required|boolean'
         ]);
 
         if ($validator->fails()) {

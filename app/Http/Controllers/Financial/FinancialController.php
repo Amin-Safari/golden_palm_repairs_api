@@ -60,7 +60,7 @@ class FinancialController extends Controller
     public function technicianIncome(Request $request)
     {
         // دریافت کاربر از توکن
-        $user = auth()->user();
+        $user = auth('sanctum')->user();
 
         if (!$user) {
             return response()->json(['error' => 'Unauthorized'], 401);

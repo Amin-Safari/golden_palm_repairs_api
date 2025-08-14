@@ -16,14 +16,14 @@ class CheckRole
     public function handle(Request $request, Closure $next, ...$roles): Response
     {
         // 1. بررسی آیا کاربر لاگین کرده است
-        if (!auth()->check()) {
+        if (!auth('sanctum')->check()) {
             return response()->json([
                 'message' => 'Unauthenticated. Please login first.'
             ], 401);
         }
 
         // 2. بررسی آیا کاربر دارای یکی از نقش‌های مورد نیاز است
-        $user = auth()->user();
+        $user = auth('sanctum')->user();
 
         if (!in_array($user->role, $roles)) {
             return response()->json([
