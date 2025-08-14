@@ -119,7 +119,7 @@ class DeviceController extends Controller
         $mobile = User::where('id', $Cid)->value('mobile');
         $device->update($request->all());
 
-        if ($device->status == 'fixed') {
+        if ($device->status == 'confirmed') {
             $text = " سلام " . $user . " عزیز " . "\n" . " دستگاه " . $device->device_name . " با کد رهگیری: " . "\"" . $device->verification_code . "\"" . " آماده تحویل است. " . "\n" . "تعمیرات نخل طلایی";
             $smsService->sendSms($mobile, $text);
         }
@@ -242,10 +242,19 @@ class DeviceController extends Controller
 
     public function fixedDevices()
     {
-        $devices = Device::where('status', 'fixed')
-            ->with(['customer', 'technician']) // اگر رابطه‌هایی وجود دارد
+        $devices = Device::whereIn('status', ['fixed','confirmed','delivered'])
+            ->with(['customer', 'technician'])
+            ->orderBy('updated_at','desc')
             ->get();
-
         return response()->json($devices);
+    }
+
+    public function findByVerification($v_code)
+    {
+        $device = Device::where('verification_code',$v_code)->with('customer')->first();
+        if (!$device){
+            return response()->json(['message'=>'دستگاه یافت نشد'],404);
+        }
+        return response()->json($device);
     }
 }

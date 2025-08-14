@@ -34,7 +34,7 @@ class DeliverController extends Controller
         $text = ' سلام ' . $name . ' عزیز ' . "\n" . "کد احراز هویت  شما:" . "\"" . $code . "\"" . "\n" . "تعمیرات نخل طلایی";
         $mas = $smsService->sendSms($mobile, $text);
 
-        Cache::put($validator->v_code, $code, 300); // 5 دقیقه
+        Cache::put($request->v_code, $code, 300);
 
         return response()->json([
             'message' => $mas,
@@ -69,5 +69,21 @@ class DeliverController extends Controller
         Cache::forget($device->mobile);
 
         return response()->json(['message' => 'Verification successful']);
+    }
+
+    public function verifyCode(Request $request)
+    {
+        $validator = Validator::make($request->all(),[
+            'v_code'=>'required|string|exists:devices,verification_code',
+            'user_code'=>'required|string'
+        ]);
+        if ($validator->fails()){
+            return response()->json($validator->errors(),422);
+        }
+        $device = Device::where('verification_code',$request->v_code)->first();
+        if ($device && $device->delivery_code==$request->user_code){
+            return response()->json(['message'=>'کد تایید صحیح است']);
+        }
+        return response()->json(['message'=>'کد وارد شده صحیح نیست'],401);
     }
 }

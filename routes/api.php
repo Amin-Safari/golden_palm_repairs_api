@@ -26,6 +26,7 @@ Route::prefix('device')->middleware('role:1,2')->group(function () {
     Route::get('count-delivered-today', [DeviceController::class, 'countDeliveredWData']);
     Route::get('count-fixing', [DeviceController::class, 'countFixing']);
     Route::get('fixed-devices', [DeviceController::class, 'fixedDevices']);
+    Route::get('by-code/{v_code}',[DeviceController::class,'findByVerification']);
 });
 
 Route::prefix('financial')->middleware('role:1')->group(function () {
@@ -62,6 +63,7 @@ Route::prefix('delivery')->group(function () {
         ->middleware('role:1');
     Route::post('check_code', [DeliverController::class, 'check_code'])
         ->middleware('role:1');
+    Route::post('verify',[DeliverController::class,'verifyCode']);
 });
 
 Route::apiResource('technician-request', RequestController::class)
