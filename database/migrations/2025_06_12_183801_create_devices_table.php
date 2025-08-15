@@ -16,7 +16,6 @@ return new class extends Migration {
             $table->foreignId('technician_id')->nullable()->constrained('users');
             $table->foreignId('device_category_id')->constrained('device_categories');
             $table->string('device_name');
-            $table->text('device_problem')->nullable();
             $table->text('repair_details')->nullable();
             $table->text('appearance_details')->nullable();
             $table->decimal('prepaid')->nullable();

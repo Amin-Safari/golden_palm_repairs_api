@@ -31,7 +31,7 @@ class DeliverController extends Controller
         $mobile = $user->mobile;
         $name = $user->name;
         $code = rand(100000, 999999);
-        $text = ' سلام ' . $name . ' عزیز ' . "\n" . "کد احراز هویت  شما:" . "\"" . $code . "\"" . "\n" . "تعمیرات نخل طلایی";
+        $text = ' سلام ' . $name . ' عزیز ' . "\n" . "کد احراز هویت  شما:" . "\"" . $code . "\"" . "\n" . "خدمات نخل طلایی";
         $mas = $smsService->sendSms($mobile, $text);
 
         Cache::put($request->v_code, $code, 300);
@@ -80,10 +80,17 @@ class DeliverController extends Controller
         if ($validator->fails()){
             return response()->json($validator->errors(),422);
         }
-        $device = Device::where('verification_code',$request->v_code)->first();
-        if ($device && $device->delivery_code==$request->user_code){
-            return response()->json(['message'=>'کد تایید صحیح است']);
+        $cachedCode = Cache::get($request->v_code);
+        if ($cachedCode && $cachedCode == $request->user_code){
+            $device = Device::where('verification_code',$request->v_code)->first();
+            if ($device){
+                $device->update(['status'=>'delivered']);
+                Cache::forget($request->v_code);
+                return response()->json(['message'=>'کد تایید صحیح است و وضعیت دستگاه به "تحویل داده شده"تغییر یافت']);
+            }
         }
+
+
         return response()->json(['message'=>'کد وارد شده صحیح نیست'],401);
     }
 }

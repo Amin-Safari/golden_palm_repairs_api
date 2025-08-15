@@ -55,7 +55,7 @@ class UserController extends Controller
 
         Cache::put('auth_code_' . $request->mobile, $code);
 
-        $text = ' سلام '. $name.' عزیز '."\n"."کد ورود شما:"."\"".$code."\""."\n"."تعمیرات نخل طلایی";
+        $text = ' سلام '. $name.' عزیز '."\n"."کد ورود شما:"."\"".$code."\""."\n"."خدمات نخل طلایی";
 //        $mas=$smsService->sendSms($request->mobile,$text);
         return response()->json([
             'message' => $code,
@@ -113,7 +113,7 @@ class UserController extends Controller
         if ($validator->fails()) {
             return response()->json(['errors' => $validator->errors()], 422);
         }
-        $text = ' سلام '. $request->name.' عزیز '."\n"."شما با موفقیت در سامانه ثبت شدید"."\n"."تعمیرات نخل طلایی";
+        $text = ' سلام '. $request->name.' عزیز '."\n"."شما با موفقیت در سامانه ثبت شدید"."\n"."خدمات نخل طلایی";
         $mas=$smsService->sendSms($request->mobile,$text);
 
         $user = User::create([

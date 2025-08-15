@@ -34,7 +34,7 @@ class RequestController extends Controller
             return response()->json($validator->errors(), 422);
         }
         $user = User::where('id', $request->technician_id)->value('name');
-        $text = "سلام جناب آقای صفری" . "\n" . "یک درخواست از طرف " . $user . "با موضوع" . $request->title . "دارید" . "\n" . "تعمیرات نخل طلایی";
+        $text = "سلام جناب آقای صفری" . "\n" . "یک درخواست از طرف " . $user . "با موضوع" . $request->title . "دارید" . "\n" . "خدمات نخل طلایی";
         $mas = $smsService->sendSms('09123111903', $text);
         $Request = Request::create($request->all());
         return response()->json(['message' => $mas, $Request]);

@@ -46,7 +46,8 @@ class DeviceController extends Controller
             'device_name' => 'required|string|max:255',
             'appearance_details' => 'nullable|string',
             'prepaid' => 'nullable|numeric',
-            'delivered_at' => 'required|'
+            'delivered_at' => 'required',
+            'received_at' => 'required'
         ]);
 
         if ($deviceValidator->fails() || $userValidator->fails()) {
@@ -74,7 +75,7 @@ class DeviceController extends Controller
             ]);
             // ارسال پیامک
             try {
-                $text = " سلام " . $request->name . " عزیز " . "\n" . " دستگاه " . $request->device_name . " با کد رهگیری: " . "\"" . $device->verification_code . "\"" . " با موفقیت ثبت شد" . "\n" . "تعمیرات نخل طلایی";
+                $text = " سلام " . $request->name . " عزیز " . "\n" . " دستگاه " . $request->device_name . " با کد رهگیری: " . "\"" . $device->verification_code . "\"" . " با موفقیت ثبت شد" . "\n" . "خدمات نخل طلایی";
                 $response = $smsService->sendSms($request->mobile, $text);
 
                 return response()->json([
@@ -120,7 +121,7 @@ class DeviceController extends Controller
         $device->update($request->all());
 
         if ($device->status == 'confirmed') {
-            $text = " سلام " . $user . " عزیز " . "\n" . " دستگاه " . $device->device_name . " با کد رهگیری: " . "\"" . $device->verification_code . "\"" . " آماده تحویل است. " . "\n" . "تعمیرات نخل طلایی";
+            $text = " سلام " . $user . " عزیز " . "\n" . " دستگاه " . $device->device_name . " با کد رهگیری: " . "\"" . $device->verification_code . "\"" . " آماده تحویل است. " . "\n" . "خدمات نخل طلایی";
             $smsService->sendSms($mobile, $text);
         }
         return response()->json([
@@ -141,9 +142,7 @@ class DeviceController extends Controller
         $Cid = $device->customer_id;
         $user = User::where('id', $Cid)->value('name');
         $mobile = User::where('id', $Cid)->value('mobile');
-        $text = " سلام " . $user . " عزیز " . "\n" . " دستگاه " . $device->device_name . " با کد رهگیری: " . "\"" . $device->verification_code . "\"" . " حذف شد
-
-        . " . "\n" . "تعمیرات نخل طلایی";
+        $text = " سلام " . $user . " عزیز " . "\n" . " دستگاه " . $device->device_name . " با کد رهگیری: " . "\"" . $device->verification_code . "\"" . " حذف شد" . "\n" . "خدمات نخل طلایی";
         $smsService->sendSms($mobile, $text);
 
         $device->delete();
